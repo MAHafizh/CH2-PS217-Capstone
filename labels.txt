@@ -1,0 +1,10 @@
+Topwear
+Bottomwear
+Socks
+Shoes
+Belts
+Bags
+Sandal
+Jewellery
+Eyewear
+Dress

@@ -1,0 +1,46 @@
+
+01Topwear
+02Bottomwear
+03Watches
+04Socks
+05Shoes
+06Belts
+07Flip Flops
+08Bags
+09Innerwear
+10Sandal
+11Shoe Accessories
+12Fragrance
+13Jewellery
+14Lips
+15Saree
+16Eyewear
+17Nails
+18Scarves
+19Dress
+20Loungewear and Nightwear
+21Wallets
+22Apparel Set
+23Headwear
+24Mufflers
+25Skin Care
+26Makeup
+27Free Gifts
+28Ties
+29Accessories
+30Skin
+31Beauty Accessories
+32Water Bottle
+33Eyes
+34Bath and Body
+35Gloves
+36Sports Accessories
+37Cufflinks
+38Sports Equipment
+39Stoles
+40Hair
+41Perfumes
+42Home Furnishing
+43Umbrellas
+44Wristbands
+45Vouchers
