@@ -21,7 +21,33 @@ const getUsers = async (req, res) => {
     }
 }
 
+const addUsers = async (req, res) => {
+    try{
+        const data = req.body;
+        await userRefs.add(data);
+        res.status(200).json({
+            status: {
+                code: 200,
+                message: "User Added"
+            },
+            data: data
+        });
+
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            status: {
+                code: 500,
+                message: "Internal Server Error"
+            },
+            error: error.message
+        });
+    }
+}
+
+
 module.exports = {
     index,
-    getUsers
+    getUsers,
+    addUsers
 };
