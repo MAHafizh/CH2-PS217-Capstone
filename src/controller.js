@@ -14,12 +14,14 @@ const getUsers = async (req, res) => {
     try{
         const snapshot = await userRefs.get();
         const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        const count = snapshot.size;
         
         res.status(200).json({
             status: {
                 code: 200,
                 message: "Success"
             },
+            total: count,
             data: list
         });
 
@@ -35,7 +37,7 @@ const getUsers = async (req, res) => {
     }
 }
 
-const addUsers = async (req, res) => {
+const addUser = async (req, res) => {
     try{
         const data = req.body;
         await userRefs.add(data);
@@ -59,7 +61,7 @@ const addUsers = async (req, res) => {
     }
 }
 
-const updateUsers = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         const id = req.params.id;
         const data = req.body;
@@ -84,9 +86,33 @@ const updateUsers = async (req, res) => {
     }
 }
 
+const deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await userRefs.doc(id).delete();
+        res.status(200).json({
+            status: {
+                code: 200,
+                message: "User Deleted"
+            }
+        });
+
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            status: {
+                code: 500,
+                message: "Internal Server Error"
+            },
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
     index,
     getUsers,
-    addUsers,
-    updateUsers,
+    addUser,
+    updateUser,
+    deleteUser
 };
