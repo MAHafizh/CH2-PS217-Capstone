@@ -59,8 +59,34 @@ const addUsers = async (req, res) => {
     }
 }
 
+const updateUsers = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const data = req.body;
+        await userRefs.doc(id).update(data);
+        res.status(200).json({
+            status: {
+                code: 200,
+                message: "User Updated"
+            },
+            data: data
+        });
+
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            status: {
+                code: 500,
+                message: "Internal Server Error"
+            },
+            error: error.message
+        });
+    }
+}
+
 module.exports = {
     index,
     getUsers,
-    addUsers
+    addUsers,
+    updateUsers,
 };
