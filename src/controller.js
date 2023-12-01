@@ -11,29 +11,68 @@ const index = (req, res) => {
 };
 
 const getUsers = async (req, res) => {
-    try{
-        const snapshot = await userRefs.get();
-        const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        const count = snapshot.size;
-        
-        res.status(200).json({
-            status: {
-                code: 200,
-                message: "Success"
-            },
-            total: count,
-            data: list
-        });
 
-    } catch(error) {
-        console.error(error);
-        res.status(500).json({
-            status: {
-                code: 500,
-                message: "Internal Server Error"
-            },
-            error: error.message
-        });
+    const id = req.params.id || req.query.id;
+
+    if(id) {
+
+        try{
+            const snapshot = await userRefs.doc(id).get()
+    
+            if(!snapshot.exists) {
+                return res.status(404).json({
+                    status: {
+                        code: 404,
+                        message: "User Not Found"
+                    },
+                    data: null
+                })
+            }
+    
+            const list = { id: snapshot.id, ...snapshot.data() };
+    
+            res.status(200).json({
+                status: {
+                    code: 200,
+                    message: "Success"
+                },
+                data: list
+            });
+        } catch(error) {
+            console.error(error);
+            res.status(500).json({
+                status: {
+                    code: 500,
+                    message: "Internal Server Error"
+                },
+                error: error.message
+            });
+        }
+    } else {
+
+        try {
+            const snapshot = await userRefs.get();
+            const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+            const count = snapshot.size;
+            
+            res.status(200).json({
+                status: {
+                    code: 200,
+                    message: "Success"
+                },
+                total: count,
+                data: list
+            });
+        } catch(error) {
+            console.error(error);
+            res.status(500).json({
+                status: {
+                    code: 500,
+                    message: "Internal Server Error"
+                },
+                error: error.message
+            });
+        }
     }
 }
 
@@ -63,7 +102,7 @@ const addUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id || req.query.id;
         const data = req.body;
         await userRefs.doc(id).update(data);
         res.status(200).json({
@@ -88,7 +127,7 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id || req.query.id;
         await userRefs.doc(id).delete();
         res.status(200).json({
             status: {
