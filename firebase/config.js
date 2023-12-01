@@ -1,5 +1,4 @@
 const firebase = require("firebase");
-const serviceAccount = require('./serviceaccountkey.json');
 
 const firebaseConfig = {
   apiKey: "AIzaSyABGzQjL-isf6MjmqlJgbnp5NTQeCP8Wlk",
