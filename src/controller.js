@@ -1,4 +1,4 @@
-const userRefs = require('../firebase/config');
+const {userRefs, storage} = require('../firebase/config');
 
 const index = (req, res) => {
     res.status(200).json({
@@ -100,6 +100,43 @@ const addUser = async (req, res) => {
     }
 }
 
+const addImgUser = async (req, res) => {
+    try{
+        const id = req.params.id || req.query.id
+        const file = req.files.file
+
+        const bucket = storage.bucket('testing-project-92c7c.appspot.com');
+        const fileUpload = bucket.file(`userImages/${id}/${file.name}`);
+        await fileUpload.save(file.data);
+
+        const [url] = await fileUpload.getSignedUrl({
+            action: 'read',
+            expires: '12-12-2024'
+        });
+
+        await userRefs.doc(id).update({
+            userimage: url
+        });
+
+        res.status(200).json({
+            status: {
+                code: 200,
+                message: "Images Added"
+            },
+            data: url
+        });
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            status: {
+                code: 500,
+                message: "Internal Server Error"
+            },
+            error: error.message
+        });
+    }
+}
+
 const updateUser = async (req, res) => {
     try {
         const id = req.params.id || req.query.id;
@@ -153,5 +190,6 @@ module.exports = {
     getUsers,
     addUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    addImgUser
 };

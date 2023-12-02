@@ -12,5 +12,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const userRefs = db.collection("useraccount");
+const storage = firebase.storage();
 
-module.exports = userRefs;
+module.exports = {userRefs, storage};
