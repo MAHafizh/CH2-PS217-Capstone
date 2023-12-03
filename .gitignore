@@ -2,5 +2,5 @@ node_modules
 serviceaccountkey.json
 multer
 images
-credential.json
+creds.json
 Untitled-1.js
