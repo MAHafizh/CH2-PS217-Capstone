@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">TrendFits</string>
+    <string name="menu_home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="desk">Description :</string>
+    <string name="back">TrendFits</string>
+    <string name="scan">Scan</string>
+    <string name="setting">Setting</string>
+    <string name="Favorite">Favorite</string>
+</resources>
