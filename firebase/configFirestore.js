@@ -1,4 +1,6 @@
 const firebase = require("firebase");
+const {Storage} = require('@google-cloud/storage');
+const { cert } = require("firebase-admin/app");
 
 const firebaseConfig = {
   apiKey: "AIzaSyABGzQjL-isf6MjmqlJgbnp5NTQeCP8Wlk",
@@ -10,8 +12,10 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
+const storageRefs = new Storage();
+
 const db = firebase.firestore();
 const userRefs = db.collection("useraccount");
-const storage = firebase.storage();
 
-module.exports = {userRefs, storage};
+module.exports = {userRefs, storageRefs};
