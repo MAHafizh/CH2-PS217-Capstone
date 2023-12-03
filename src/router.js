@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const router = express.Router();
-const { userRefs } = require("../firebase/configFirestore.js");
+const { userRefs, fieldvalue } = require("../firebase/configFirestore.js");
 const { bucket: storageBucket } = require('../firebase/configStorage.js');
 
 const {
@@ -63,7 +63,7 @@ router.post("/upload/", upload.single("image"), async (req, res) => {
 
     const bucket = storageBucket;
     const timestamp = new Date().toISOString();
-    const filePath = `images/${timestamp}_${file.originalname}`;
+    const filePath = `userimages/${timestamp}_${file.originalname}`;
     const uploadOpt = {
       destination: filePath,
       metadata: { contentType: file.mimetype },
@@ -72,7 +72,11 @@ router.post("/upload/", upload.single("image"), async (req, res) => {
 
     const imageURL = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
 
-    await userRefs.doc(id).update({ imageURL });
+    fs.unlinkSync(file.path);
+
+    await userRefs.doc(id).update({
+        imageURLs: fieldvalue.arrayUnion(imageURL),
+    });
 
     res.status(200).json({
       status: {
