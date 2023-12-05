@@ -98,7 +98,7 @@ fun ClothesContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(8.dp),
             ) {
                 Row(
                     modifier = Modifier
@@ -154,7 +154,6 @@ fun ClothesContent(
 
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(140.dp),
-                    contentPadding = PaddingValues(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = modifier
