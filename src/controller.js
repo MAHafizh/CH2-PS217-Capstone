@@ -10,6 +10,47 @@ const index = (req, res) => {
   });
 };
 
+const getUserImg = async(req, res) => {
+
+  try {
+    const id = req.params.id || req.query.id;
+  
+    if (!id) {
+      return res.status(400).json({
+        status: {
+          code: 400,
+          message: "Bad Request",
+        },
+        error: "Missing 'id' parameter.",
+      });
+    }
+  
+    const snapshot = await userRefs.doc(id).get();
+    const imageURL = snapshot.data().imageURLs || [];
+    const profileImg = snapshot.data().profileImageURL;
+
+    res.status(200).json({
+      status: {
+        code: 200,
+        message: "Success",
+      },
+      imageURLs: imageURL,
+      profileURL: profileImg
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+      error: error.message,
+    });
+  }
+
+}
+
 const getUsers = async (req, res) => {
   const id = req.params.id || req.query.id;
 
@@ -96,42 +137,6 @@ const addUser = async (req, res) => {
   }
 };
 
-// const addImgUser = async (req, res) => {
-//     try{
-//         const id = req.params.id || req.query.id
-//         const file = req.uploadedFile;
-
-//         const bucket = storage.bucket('testing-project-92c7c.appspot.com');
-//         const fileUpload = bucket.file(`userImages/${id}/${file.name}`);
-//         await fileUpload.save(file.data);
-
-//         const [url] = await fileUpload.getSignedUrl({
-//             action: 'read',
-//             expires: '12-12-2024'
-//         });
-
-//         await userRefs.doc(id).update({
-//             userimage: url
-//         });
-
-//         res.status(200).json({
-//             status: {
-//                 code: 200,
-//                 message: "Images Added"
-//             },
-//             data: url
-//         });
-//     } catch(error) {
-//         console.error(error);
-//         res.status(500).json({
-//             status: {
-//                 code: 500,
-//                 message: "Internal Server Error"
-//             },
-//             error: error.message
-//         });
-//     }
-// }
 
 const updateUser = async (req, res) => {
   try {
@@ -185,5 +190,5 @@ module.exports = {
   addUser,
   updateUser,
   deleteUser,
-  //addImgUser,
+  getUserImg
 };

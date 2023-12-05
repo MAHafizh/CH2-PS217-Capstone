@@ -13,6 +13,7 @@ const {
   addUser,
   updateUser,
   deleteUser,
+  getUserImg
 } = require("./controller.js");
 
 const storage = multer.diskStorage({
@@ -45,7 +46,7 @@ const filter = function (req, file, cb) {
 
 const upload = multer({ storage, filter });
 
-router.post("/upload/", upload.single("image"), async (req, res) => {
+router.post("/upload/images/", upload.single("image"), async (req, res) => {
   try {
     id = req.query.id || req.params.id
 
@@ -63,7 +64,8 @@ router.post("/upload/", upload.single("image"), async (req, res) => {
 
     const bucket = storageBucket;
     const timestamp = new Date().toISOString();
-    const filePath = `userimages/${timestamp}_${file.originalname}`;
+    const sequence = await getNumberOfImages(id);
+    const filePath = `userimages/${timestamp}_${id}_${sequence}`;
     const uploadOpt = {
       destination: filePath,
       metadata: { contentType: file.mimetype },
@@ -96,6 +98,64 @@ router.post("/upload/", upload.single("image"), async (req, res) => {
   }
 });
 
+router.post("/upload/profileimage/", upload.single("image"), async (req, res) => {
+  try {
+    id = req.query.id || req.params.id
+
+    if (!id) {
+        return res.status(400).json({
+          status: {
+            code: 400,
+            message: "Bad Request",
+          },
+          error: "Missing 'id' parameter.",
+        });
+      }
+
+    const file = req.file;
+
+    const bucket = storageBucket;
+    const timestamp = new Date().toISOString();
+    const sequence = await getNumberOfImages(id);
+    const filePath = `profileimages/${id}_${timestamp}`;
+    const uploadOpt = {
+      destination: filePath,
+      metadata: { contentType: file.mimetype },
+    };
+    await bucket.upload(file.path, uploadOpt);
+
+    const imageURL = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+
+    fs.unlinkSync(file.path);
+
+    await userRefs.doc(id).update({
+        profileImageURL: imageURL,
+    });
+
+    res.status(200).json({
+      status: {
+        code: 200,
+        message: "Images Added",
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: {
+        code: 500,
+        message: "Internal Server Error",
+      },
+      error: error.message,
+    });
+  }
+});
+
+async function getNumberOfImages(id) {
+  const userDoc = await userRefs.doc(id).get();
+  const imageURLs = userDoc.data().imageURLs || [];
+  return imageURLs.length + 1;
+}
+
 router.get("/", index);
 router.get("/users", getUsers);
 router.get("/users/:id", getUsers);
@@ -104,5 +164,7 @@ router.put("/users", updateUser);
 router.put("/users/:id", updateUser);
 router.delete("/users", deleteUser);
 router.delete("/users/:id", deleteUser);
+router.get("/userimages/:id", getUserImg);
+router.get("/userimages", getUserImg);
 
 module.exports = router;
